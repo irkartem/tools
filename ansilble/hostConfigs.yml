@@ -1,0 +1,8 @@
+---
+- hosts: webhost
+  remote_user: root
+  tasks:
+  - name: Copy php.ini file
+    copy: src=/srv/configs/php.ini dest=/etc/php.ini owner=root group=root mode=0644
+  - name: Copy nginx.conf file
+    copy: src=/srv/configs/nginx.conf dest=/etc/nginx/nginx.conf owner=root group=root mode=0644

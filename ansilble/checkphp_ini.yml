@@ -7,7 +7,6 @@
     register: lmd5
   - stat: path=/etc/php.ini get_md5=yes
     register: rmd5
-  - debug: msg='report this task as "changed" if file changed'
-    changed_when: "'{{lmd5.stat.md5}}' != '{{rmd5.stat.md5}}'"
-  - debug: msg='execute this task if file changed'
+  - local_action: shell /opt/tools/sh/sshdiff.sh {{ ansible_nodename }} /etc/php.ini /srv/configs/php.ini
+    register: diffdata
     when: "'{{lmd5.stat.md5}}' != '{{rmd5.stat.md5}}'"

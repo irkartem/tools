@@ -1,0 +1,12 @@
+---
+- hosts: webhost
+  remote_user: root
+  tasks:
+  - name: Check for local.php.ini
+    local_action: stat path=/srv/configs/nginx.conf get_md5=yes
+    register: lmd5
+  - stat: path=/etc/nginx/nginx.conf get_md5=yes
+    register: rmd5
+  - local_action: shell /opt/tools/sh/sshdiff.sh {{ ansible_nodename }} /etc/nginx/nginx.conf /srv/configs/nginx.conf
+    register: diffdata
+    when: "'{{lmd5.stat.md5}}' != '{{rmd5.stat.md5}}'"
