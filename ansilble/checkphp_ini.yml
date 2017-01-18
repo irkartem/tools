@@ -1,0 +1,13 @@
+---
+- hosts: webhost
+  remote_user: root
+  tasks:
+  - name: Check for local.php.ini
+    local_action: stat path=/srv/config/php.ini get_md5=yes
+    register: lmd5
+  - stat: path=/etc/php.ini get_md5=yes
+    register: rmd5
+  - debug: msg='report this task as "changed" if file changed'
+    changed_when: "'{{lmd5.stat.md5}}' != '{{rmd5.stat.md5}}'"
+  - debug: msg='execute this task if file changed'
+    when: "'{{lmd5.stat.md5}}' != '{{rmd5.stat.md5}}'"
