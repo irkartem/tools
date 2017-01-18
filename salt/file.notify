@@ -1,0 +1,5 @@
+-N hosting;hlimits.sls
+-N hosting;hsysctl.sls
+-N hosting;nginxconf.sls
+-N hosting;phpini.sls
+-N hosting;sshkeys.sls

@@ -1,0 +1,17 @@
+- stat: path=/etc/swift/account.ring.gz get_md5=yes
+  register: before
+
+- name: write account.ring.gz file
+  shell: swift-ring-builder account.builder write_ring # update account.ring.gz
+    chdir=/etc/swift
+  changed_when: False # without this, as long as swift-ring-builder exits with
+                      # return code 0 this task would always be reported as changed
+
+- stat: path=/etc/swift/account.ring.gz get_md5=yes
+  register: after
+
+- debug: msg='report this task as "changed" if file changed'
+  changed_when: "'{{before.stat.md5}}' != '{{after.stat.md5}}'"
+
+- debug: msg='execute this task if file changed'
+  when: "'{{before.stat.md5}}' != '{{after.stat.md5}}'"
