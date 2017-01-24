@@ -1,0 +1,13 @@
+---
+- hosts: vmmgr
+#  gather_facts: no
+  tasks:
+    - name: Check for list of user
+      shell: /usr/local/mgr5/sbin/mgrctl -m vmmgr user |grep -v level=16 |sed 's/.*name=//'  |egrep -v 'admin |artem |shtnik |sasga |asgard |billmgr |stemenev |scherbak |chernyshov |i.artemev |a.adushkin |k.tsvetkov |d.bahaev |jammarra |ddosguard |a.atamanov |bunkerbill'
+      register: oout
+      ignore_errors: true
+
+    - name: send message
+#      debug: msg={{ oout.stdout }}
+      local_action: shell /opt/tools/sh/sendme.sh {{ ansible_nodename }} {{ oout.stdout}}
+      when: oout.failed == 0
