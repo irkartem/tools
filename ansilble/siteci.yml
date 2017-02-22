@@ -1,0 +1,18 @@
+---
+- hosts: siteci
+  remote_user: root
+  tasks:
+  - name: upgrade all packages
+    yum:
+      name: '*'
+      state: latest
+  - name: Install yum packages
+    yum: name={{item}} state=installed
+    with_items:
+      - epel-release
+      - python34
+      - python34-setuptools
+  - name: Install pip 3.4 
+    shell:  easy_install-3.4 pip
+  - pip:
+      name: flask

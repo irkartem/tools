@@ -6,3 +6,5 @@
     copy: src=/srv/configs/php.ini dest=/etc/php.ini owner=root group=root mode=0644
   - name: Copy nginx.conf file
     copy: src=/srv/configs/nginx.conf dest=/etc/nginx/nginx.conf owner=root group=root mode=0644
+  - name: Copy proftpd.conf file
+    copy: src=/opt/configs/proftpd.conf dest=/etc/proftpd.conf owner=root group=root mode=0644
