@@ -16,7 +16,7 @@ false
 while [ $? -ne 0 -a $i -lt $MAX_RETRIES ]
 do
      i=$(($i+1))
-      /usr/bin/orsync --timeout=6 $@
+      /usr/bin/rsync --timeout=6 $@
   done
 
   if [ $i -eq $MAX_RETRIES ]
