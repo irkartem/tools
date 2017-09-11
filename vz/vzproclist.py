@@ -11,6 +11,7 @@ except IOError:
   exit(0)
 
 bad = ['miner']
+good = ['(mysqld)','(mongod)']
 pid = 0
 cmd = 1
 state = 2
@@ -39,6 +40,6 @@ for l in args.file.readlines():
           ip=line[12:-2].strip().split(' ')[0]
 	except Exception:
           ip='NONE'
-  if (int(k[ctime]) > 100000 or int(k[io]) > 10000):
+  if (int(k[ctime]) > 100000 or int(k[io]) > 10000) and k[cmd] not in good:
     print '{6} {0} {1} {2} vz={3} cputime={4} io={5}'.format(k[pid],k[cmd],k[state],k[veid],k[ctime],k[io],ip)
 #need to parse CMD string 
