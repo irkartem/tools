@@ -24,7 +24,7 @@ pids = [pid for pid in os.listdir('/proc') if pid.isdigit()]
 
 bad = ['ArchiSteamFarm','mod-tmp','game','cryptonight','minerd','inergate','arcticcoind','multichaind']
 bad = ['core','mgrctl','filemgr']
-good = ['(mysqld)','(mongod)']
+good = ['(aggregator)','(apache2)','(atd)','(auditd)','(bash)','(beam.smp)','(bird)','(bundle)','(clamd)','(dbus-daemon)','(dovecot)','(ezstream)','(fail2ban-server)','(freshclam)','(gitlab-mon)','(gunicorn)','(hald)','(httpd)','(icecast2)','(ihttpd)','(init)','(inotifywait)','(java)','(liquidsoap)','(master)','(monit)','(named)','(nginx)','(node_exporter)','(ntpd)','(otrs.Daemon.pl)','(packagekitd)','(php-fpm)','(postgres)','(postgres_export)','(proftpd)','(prometheus)','(python2)','(qmgr)','(radiopoint)','(redis-server)','(rsyslogd)','(salt-minion)','(searchd)','(squid)','(sshd)','(supervisord)','(systemd)','(systemd-journal)','(systemd-logind)','(terminal.exe)','(ts3server)','(tuned)','(/usr/sbin/postg)','(/usr/sbin/spamd)','(uwsgi)']
 pid = 0
 cmd = 1
 state = 2
