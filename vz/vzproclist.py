@@ -2,9 +2,11 @@
 # parse /proc/$i/stat for procs
 
 import os
+import socket
+hh = socket.gethostname()
 pids = [pid for pid in os.listdir('/proc') if pid.isdigit()]
 
-bad = ['miner']
+bad = ['ArchiSteamFarm','mod-tmp','game','cryptonight','minerd','inergate','arcticcoind','multichaind']
 good = ['(mysqld)','(mongod)']
 pid = 0
 cmd = 1
@@ -35,10 +37,13 @@ for f in pids:
             if 'IP_ADDRESS="' in line:
               try:
                 ip=line[12:-2].strip().split(' ')[0]
-      	      except Exception:
+              except Exception:
                 ip='NONE'
+        for bb in bad:
+          if bb in k[cmd]:
+            print "\033[93m #######{2} Should kill {0} {1} ######### \033[0m".format(k[cmd],ip,hh)
         if (int(k[ctime]) > 100000 or int(k[io]) > 10000) and k[cmd] not in good:
-          print '{6} {0} {1} {2} vz={3} cputime={4} io={5}'.format(k[pid],k[cmd],k[state],k[veid],k[ctime],k[io],ip)
+          print '{7} {6} {0} {1} {2} vz={3} cputime={4} io={5}'.format(k[pid],k[cmd],k[state],k[veid],k[ctime],k[io],ip,hh)
   except Exception:
     continue
 #need to parse CMD string 
