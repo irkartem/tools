@@ -14,7 +14,7 @@ def killsend(pid,s):
     print "\033[93m ####### Should kill {0} ######### \033[0m".format(s)
 
 def gettotal():
-    with open'/proc/stat') as f:
+    with open('/proc/stat') as f:
         ttl = f.readline().strip().split()
         sm = int(ttl[1])+ int(ttl[2]) + int(ttl[3]) + int(ttl[4])
     return sm
