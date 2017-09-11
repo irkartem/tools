@@ -59,7 +59,7 @@ for f in pids:
         for bb in kill:
           if bb in k[cmd]:
              killsend(k[pid],'{0} {1} {2} {3} {4}'.format(hh,ip,k[pid],k[cmd],k[veid]))
-        ptr = re.compile("php.*_.*") 
+        ptr = re.compile(".*php....._.*") 
         if ptr.match(k[cmd]):
           killsend(k[pid],'{0} {1} {2} {3} {4}'.format(hh,ip,k[pid],k[cmd],k[veid]))
   except Exception:
