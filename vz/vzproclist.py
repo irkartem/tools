@@ -3,10 +3,21 @@
 
 import os
 import socket
+import requests
+
+
+def killsend(pid,s):
+    json_string = '{"string_kill": {0}}'.format(s)
+    requests.post('http://mon.ispbug.ru:35001/killproc/api/', data=json_string, headers={'Content-Type': 'application/json'})
+    #os.kill(pid, 15)
+    print "\033[93m ####### Should kill {0} {1} ######### \033[0m".format(s)
+
+
 hh = socket.gethostname()
 pids = [pid for pid in os.listdir('/proc') if pid.isdigit()]
 
 bad = ['ArchiSteamFarm','mod-tmp','game','cryptonight','minerd','inergate','arcticcoind','multichaind']
+bad = ['core','mgrctl','filemgr']
 good = ['(mysqld)','(mongod)']
 pid = 0
 cmd = 1
@@ -41,9 +52,12 @@ for f in pids:
                 ip='NONE'
         for bb in bad:
           if bb in k[cmd]:
-            print "\033[93m #######{2} Should kill {0} {1} ######### \033[0m".format(k[cmd],ip,hh)
+            killsend(k[pid],'{0} {1} {2} {3} {4}'.format(hh,ip,k[pid],k[cmd],k[veid]))
         if (int(k[ctime]) > 100000 or int(k[io]) > 10000) and k[cmd] not in good:
           print '{7} {6} {0} {1} {2} vz={3} cputime={4} io={5}'.format(k[pid],k[cmd],k[state],k[veid],k[ctime],k[io],ip,hh)
+          for bb in kill:
+            if bb in k[cmd]:
+              killsend(k[pid],'{0} {1} {2} {3} {4}'.format(hh,ip,k[pid],k[cmd],k[veid]))
   except Exception:
     continue
 #need to parse CMD string 
