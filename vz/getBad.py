@@ -6,6 +6,10 @@ import requests
 import json
 import urllib.parse
 import re
+import sqlite3
+
+
+DB_STRING = "/opt/ansible/artem/tools/vz/tickets.sqlite"
 
 def killsend(s):
     json_string = {}
@@ -17,6 +21,23 @@ def sshkill(host,pid):
      stdout, stderr = Popen(['ssh', '-q','-o UserKnownHostsFile=/dev/null ','-o StrictHostKeyChecking=no','-o ConnectTimeout=10', 'root@{}'.format(host), 'kill -9 {}'.format(pid)],stdout=PIPE,universal_newlines=True).communicate()
      return stdout
 
+
+def tocuchticket(tpe,ip,ticket):
+    with sqlite3.connect(DB_STRING) as c:
+        r = c.execute("INSERT INTO tickets(type,ip,ticket) VALUES (?,?,?)",[tpe,ip,ticket])
+    return r
+
+def getticket(tpe,ip):
+  with sqlite3.connect(DB_STRING) as c:
+       #r = c.execute("SELECT t, data FROM log where t>= datetime('now', '-1 minutes','localtime');")
+       r = c.execute("select ticket from tickets where type=? and ip=?;",[tpe,ip])
+       ip = r.fetchone()
+       if ip:
+           return ip[0]
+       else:
+         return False
+
+
 if __name__ == '__main__':
     f = open('/var/tmp/procsforkill', 'w')
     lst = []
@@ -26,7 +47,7 @@ if __name__ == '__main__':
     output = subprocess.run("/usr/local/bin/ansible vznode -i /opt/ansible/inventory.py -m shell -a '/opt/vzProcs.py'", shell=True, stdout=subprocess.PIPE,universal_newlines=True) 
     #print("/usr/bin/ansible {} -i /opt/ansible/inventory.py -m shell -a '/usr/local/mgr5/sbin/mgrctl -m vemgr vmhostnode'".format(master))
     for l in str(output.stdout).split('\n'):
-        try:
+  :      try:
           host,ip,pid,cmd,state,vid,cpu,io,fcmd = l.split(' ')
         except Exception:
             continue
@@ -49,8 +70,13 @@ if __name__ == '__main__':
           killsend("CPU core with pid {}, {}, veid {}, {}, {}, cpu {}".format(pid,fcmd,vid,host,ip,cpu))
           sshkill(host,pid)
         if (cpu > 10000 and cmd in miner) or re.match('\(php......_.*',cmd):
-          name = u'Майнинг на VDS {} {}'.format(cmd,ip)
-          text = u'''
+          tt = getticket('mine',ip)
+          if tt != False:
+              print("Need to append ticket {} {}i {}".format(tt,ip,cmd))
+              sshkill(host,pid)
+          else:
+              name = u'Майнинг на VDS {} {}'.format(cmd,ip)
+              text = u'''
 Здравствуйте, %name%.
 
 Мы заметили, что на вашем сервере %itemname% установлено запрещенное правилами предоставления услуг ПО.
@@ -62,10 +88,10 @@ if __name__ == '__main__':
 
 При повторении ситуации мы будем вынуждены отказать вам в предоставлении услуг. 
 '''.format(pid,state,cmd)
-          r = requests.get('https://my.ispsystem.com/mancgi/ticket2client?ip={}&agree=1&{}'.format(ip,urllib.parse.urlencode({'subject': name.encode('utf8'),'message': text.encode('utf8')})))
-          out = r.content.decode('utf-8')
-          #print("######KilledFucking {} {}, {}, {}, {}, {}, cpu {}".format(pid,state,cmd,vid,host,ip,cpu))
-          killsend("Miner have found pid {}, {}, veid {}, {}, {}, ticket {}".format(pid,cmd,vid,host,ip,out))
-          sshkill(host,pid)
+              r = requests.get('https://my.ispsystem.com/mancgi/ticket2client?ip={}&agree=1&{}'.format(ip,urllib.parse.urlencode({'subject': name.encode('utf8'),'message': text.encode('utf8')})))
+              out = r.content.decode('utf-8')
+              #print("######KilledFucking {} {}, {}, {}, {}, {}, cpu {}".format(pid,state,cmd,vid,host,ip,cpu))
+              killsend("Miner have found pid {}, {}, veid {}, {}, {}, ticket {}".format(pid,cmd,vid,host,ip,out))
+              sshkill(host,pid)
 
 
