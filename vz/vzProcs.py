@@ -40,7 +40,10 @@ for f in pids:
                 ip=line[12:-2].strip().split(' ')[0]
               except Exception:
                 ip='NONE'
-          print '{7} {6} {0} {1} {2} vz={3} cputime={4} io={5}'.format(k[pid],k[cmd],k[state],k[veid],k[ctime],k[io],ip,hh)
+        with open('/proc/{0}/cmdline'.format(f), 'r') as ff:
+          fcmd = ff.read().strip().replace(' ','__')
+
+        print '{7} {6} {0} {1} {2} vz={3} cputime={4} io={5} {8}'.format(k[pid],k[cmd],k[state],k[veid],k[ctime],k[io],ip,hh,fcmd)
   except Exception:
     continue
 #need to parse CMD string 
