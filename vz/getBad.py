@@ -9,7 +9,7 @@ import re
 import sqlite3
 
 
-DB_STRING = "/opt/ansible/artem/tools/vz/tickets.sqlite"
+DB_STRING = "/opt/db/tickets.sqlite"
 
 def killsend(s):
     json_string = {}
