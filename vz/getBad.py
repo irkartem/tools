@@ -47,7 +47,7 @@ if __name__ == '__main__':
     output = subprocess.run("/usr/local/bin/ansible vznode -i /opt/ansible/inventory.py -m shell -a '/opt/vzProcs.py'", shell=True, stdout=subprocess.PIPE,universal_newlines=True) 
     #print("/usr/bin/ansible {} -i /opt/ansible/inventory.py -m shell -a '/usr/local/mgr5/sbin/mgrctl -m vemgr vmhostnode'".format(master))
     for l in str(output.stdout).split('\n'):
-  :      try:
+        try:
           host,ip,pid,cmd,state,vid,cpu,io,fcmd = l.split(' ')
         except Exception:
             continue
