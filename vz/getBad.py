@@ -84,11 +84,12 @@ if __name__ == '__main__':
 
 Прямо сейчас я остановил ваш процесс {} {} {}. 
 
-Если это запускали не вы, то вам следует провести расследоваение. Так как ваш сервер взломан. 
+Вам необходимо принять для предотвращения повторения этой ситуации. И написать в этот тикет какие меры приняты.
 
-При повторении ситуации мы будем вынуждены отказать вам в предоставлении услуг. 
+В противном случае мы будем вынуждены остановить ваш VDS. 
+
 '''.format(pid,state,cmd)
-              r = requests.get('https://my.ispsystem.com/mancgi/ticket2client?ip={}&agree=1&{}'.format(ip,urllib.parse.urlencode({'subject': name.encode('utf8'),'message': text.encode('utf8')})))
+              r = requests.get('https://my.ispsystem.com/mancgi/ticket2client?ip={}&agree=1&warn=1&{}'.format(ip,urllib.parse.urlencode({'subject': name.encode('utf8'),'message': text.encode('utf8')})))
               out = r.content.decode('utf-8')
               #print("######KilledFucking {} {}, {}, {}, {}, {}, cpu {}".format(pid,state,cmd,vid,host,ip,cpu))
               killsend("Miner have found pid {}, {}, veid {}, {}, {}, ticket {}".format(pid,cmd,vid,host,ip,out))
