@@ -61,7 +61,7 @@ if __name__ == '__main__':
             io = 0
         if cpu > 300000 or io > 300000:
             if cmd not in white:
-                f.write(" {} {}, {}, {}, {}, {}, cpu {} \n".format(cmd,pid,state,vid,host,ip,cpu,fcmd))
+                f.write(" {} {}, {}, {}, {}, {}, cpu {} {}\n".format(cmd,pid,state,vid,host,ip,cpu,fcmd))
         if cpu > 100000 and 'bash' in cmd:
           killsend("CPU bash with pid {}, {}, veid {}, {}, {}, cpu {}".format(pid,fcmd,vid,host,ip,cpu))
           sshkill(host,pid)
