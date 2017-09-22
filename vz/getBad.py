@@ -22,7 +22,7 @@ def sshkill(host,pid):
      return stdout
 
 
-def tocuchticket(tpe,ip,ticket):
+def touchticket(tpe,ip,ticket):
     with sqlite3.connect(DB_STRING) as c:
         r = c.execute("INSERT INTO tickets(type,ip,ticket) VALUES (?,?,?)",[tpe,ip,ticket])
     return r
@@ -44,7 +44,7 @@ if __name__ == '__main__':
     white = ['(mysqld)','(monclient)','(postgres)','(nginx)','(ruby)','(node)','(auditd)','(python)','(python2)','(uwsgi)','(php5-fpm)','(gunicorn)','(php)','(terminal.exe)','(mongod)','(influxd)','(php-fpm)','(qmgr)','(redis-server)','(nagios)','(httpd)','(mysqld_safe)','(httpd.itk)','(uwsgi-core)','(php-fpm7.0)','(apache2)']
     miner = ['(monacoCoind)','(geysercoind)','(minerd)','(coind)','(arcticcoind)','(multichaind)','(cryptonight)']
     kill = ['(core)','(licctl)','(usagestat)','(isptar)']
-    game = ['(samp03svr)','(hlds_linux)','(hlds_i686)',]
+    game = ['(samp03svr)','(hlds_linux)','(hlds_i686)','(srcds_linux)','(ioq3ded)']
     output = subprocess.run("/usr/local/bin/ansible vznode -i /opt/ansible/inventory.py -m shell -a '/opt/vzProcs.py'", shell=True, stdout=subprocess.PIPE,universal_newlines=True) 
     #print("/usr/bin/ansible {} -i /opt/ansible/inventory.py -m shell -a '/usr/local/mgr5/sbin/mgrctl -m vemgr vmhostnode'".format(master))
     for l in str(output.stdout).split('\n'):
@@ -93,6 +93,7 @@ if __name__ == '__main__':
               r = requests.get('https://my.ispsystem.com/mancgi/ticket2client?ip={}&agree=1&warn=1&{}'.format(ip,urllib.parse.urlencode({'subject': name.encode('utf8'),'message': text.encode('utf8')})))
               out = r.content.decode('utf-8')
               #print("######KilledFucking {} {}, {}, {}, {}, {}, cpu {}".format(pid,state,cmd,vid,host,ip,cpu))
+              touchticket('mine',ip,out)
               killsend("Miner have found pid {}, {}, veid {}, {}, {}, ticket {}".format(pid,cmd,vid,host,ip,out))
               sshkill(host,pid)
 
