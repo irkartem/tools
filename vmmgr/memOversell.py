@@ -56,4 +56,4 @@ if __name__ == '__main__':
             except Exception:
                 continue
         print(vls)
-        changesend("{} vms:{} limit:{} willchangeto:{}".format(vls['countvm'],vls['maxvmcount'],vls['meminfo']))
+        changesend("{} vms:{} limit:{} willchangeto:{}".format(vls['name'],vls['countvm'],vls['maxvmcount'],vls['meminfo']))
