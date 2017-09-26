@@ -43,4 +43,9 @@ if __name__ == '__main__':
             if vls['name'].startswith('jupiter'):
                 continue
             #changesend("{} vms:{} limit:{} mem:{}".format(vls['name'],vls['countvm'],vls['maxvmcount'],vls['meminfo']))
+            master = vls['name'].split('-')[0]
+            if master == 'msk':
+                master = "{}-{}".format(vls['name'].split('-')[0],vls['name'].split('-')[1])
+            if master == 'wkvm':  master = 'kvm'
             print("{} vms:{} limit:{} mem:{}".format(vls['name'],vls['countvm'],vls['maxvmcount'],vls['meminfo']))
+            print ("{}.hoztnode.net".format(master))
