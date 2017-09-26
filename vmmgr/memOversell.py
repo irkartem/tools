@@ -19,7 +19,7 @@ def read_authfile(path):
 def changesend(s):
     json_string = {}
     json_string['mem_info'] = s
-    r = requests.post('http://mon.ispbug.ru:35000/mem/api/', data=json.dumps(json_string), headers = {'Content-type': 'application/json', 'Authorization': 'Token {}'.format(read_authfile('/opt/ansible/artem/tools/vmmgr/auth'))})
+    r = requests.post('http://mon.ispbug.ru:35000/killproc/mem/api/', data=json.dumps(json_string), headers = {'Content-type': 'application/json', 'Authorization': 'Token {}'.format(read_authfile('/opt/ansible/artem/tools/vmmgr/auth'))})
     return True
 
 def sshkill(host,pid):
