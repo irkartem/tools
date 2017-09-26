@@ -43,4 +43,11 @@ if __name__ == '__main__':
     lst = []
     output = subprocess.run("ansible kvmaster -i /opt/ansible/inventory.py -m shell -a '/usr/local/mgr5/sbin/mgrctl -m vmmgr vmhostnode'  | egrep 'meminfo=[8-9][0-9]'", shell=True, stdout=subprocess.PIPE,universal_newlines=True) 
     for l in str(output.stdout).split('\n'):
-        print(l)
+        vls = {}
+        for vv in l.strip().split(' '):
+            try:
+                n,v = vv.split('=')[:2]
+                vls[n] = v
+            except Exception:
+                continue
+        print(vls)
