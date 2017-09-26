@@ -12,8 +12,8 @@ import sqlite3
 DB_STRING = "/opt/db/tickets.sqlite"
 
 def read_authfile(path):
-    with open(path, 'rb') as f:
-        return f.read()
+    with open(path, 'r') as f:
+        return f.read().strip()
 
 
 def changesend(s):
@@ -56,4 +56,5 @@ if __name__ == '__main__':
             except Exception:
                 continue
         print(vls)
-        changesend("{} vms:{} limit:{} willchangeto:{}".format(vls['name'],vls['countvm'],vls['maxvmcount'],vls['meminfo']))
+        if 'name' in vls.keys():
+            changesend("{} vms:{} limit:{} willchangeto:{}".format(vls['name'],vls['countvm'],vls['maxvmcount'],vls['meminfo']))
