@@ -27,25 +27,9 @@ def sshkill(host,pid):
      return stdout
 
 
-def touchticket(tpe,ip,ticket):
-    with sqlite3.connect(DB_STRING) as c:
-        r = c.execute("INSERT INTO tickets(type,ip,ticket) VALUES (?,?,?)",[tpe,ip,ticket])
-    return r
-
-def getticket(tpe,ip):
-  with sqlite3.connect(DB_STRING) as c:
-       #r = c.execute("SELECT t, data FROM log where t>= datetime('now', '-1 minutes','localtime');")
-       r = c.execute("select ticket from tickets where type=? and ip=?;",[tpe,ip])
-       ip = r.fetchone()
-       if ip:
-           return ip[0]
-       else:
-         return False
 
 
 if __name__ == '__main__':
-    f = open('/var/tmp/procsforkill', 'w')
-    lst = []
     output = subprocess.run("ansible kvmaster -i /opt/ansible/inventory.py -m shell -a '/usr/local/mgr5/sbin/mgrctl -m vmmgr vmhostnode'  | egrep 'meminfo=[8-9][0-9]'", shell=True, stdout=subprocess.PIPE,universal_newlines=True) 
     for l in str(output.stdout).split('\n'):
         vls = {}
@@ -55,6 +39,8 @@ if __name__ == '__main__':
                 vls[n] = v
             except Exception:
                 continue
-        print(vls)
         if 'name' in vls.keys():
-            changesend("{} vms:{} limit:{} willchangeto:{}".format(vls['name'],vls['countvm'],vls['maxvmcount'],vls['meminfo']))
+            if vls['name'].startswith('jupiter'):
+                continue
+            #changesend("{} vms:{} limit:{} mem:{}".format(vls['name'],vls['countvm'],vls['maxvmcount'],vls['meminfo']))
+            print("{} vms:{} limit:{} mem:{}".format(vls['name'],vls['countvm'],vls['maxvmcount'],vls['meminfo']))
