@@ -22,8 +22,12 @@ def changesend(s):
     r = requests.post('http://mon.ispbug.ru:35000/killproc/mem/api/', data=json.dumps(json_string), headers = {'Content-type': 'application/json', 'Authorization': 'Token {}'.format(read_authfile('/opt/ansible/artem/tools/vmmgr/auth'))})
     return True
 
-def sshkill(host,pid):
-     stdout, stderr = Popen(['ssh', '-q','-o UserKnownHostsFile=/dev/null ','-o StrictHostKeyChecking=no','-o ConnectTimeout=10', 'root@{}'.format(host), 'kill -9 {}'.format(pid)],stdout=PIPE,universal_newlines=True).communicate()
+def decreaseLimit(host,elid,lmt):
+     master = host.split('-')[0]
+     if master == 'msk':
+         master = "{}-{}".format(host.split('-')[0],host.split('-')[1])
+     if master == 'wkvm':  master = 'kvm'
+     stdout, stderr = Popen(['ssh', '-q','-o UserKnownHostsFile=/dev/null ','-o StrictHostKeyChecking=no','-o ConnectTimeout=10', 'root@{}'.format(master), '/usr/local/mgr5/sbin/mgrctl -m vmmgr vmhostnode.edit  elid={} maxvmcount={} sok=ok'.format(elid,lmt)],stdout=PIPE,universal_newlines=True).communicate()
      return stdout
 
 
@@ -43,9 +47,7 @@ if __name__ == '__main__':
             if vls['name'].startswith('jupiter'):
                 continue
             #changesend("{} vms:{} limit:{} mem:{}".format(vls['name'],vls['countvm'],vls['maxvmcount'],vls['meminfo']))
-            master = vls['name'].split('-')[0]
-            if master == 'msk':
-                master = "{}-{}".format(vls['name'].split('-')[0],vls['name'].split('-')[1])
-            if master == 'wkvm':  master = 'kvm'
-            print("{} vms:{} limit:{} mem:{}".format(vls['name'],vls['countvm'],vls['maxvmcount'],vls['meminfo']))
-            print ("{}.hoztnode.net".format(master))
+            if int(vls['maxvmcount']) < int(vls['countvm']):
+                continue
+            nlimit = int(vls['countvm'])-1
+            print("{} vms:{} limit/old:{}/{} mem:{}".format(vls['name'],vls['countvm'],nlimit,vls['maxvmcount'],vls['meminfo']))
