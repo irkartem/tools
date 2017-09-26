@@ -11,10 +11,15 @@ import sqlite3
 
 DB_STRING = "/opt/db/tickets.sqlite"
 
-def killsend(s):
+def read_authfile(path):
+    with open(path, 'rb') as f:
+        return f.read()
+
+
+def changesend(s):
     json_string = {}
     json_string['string_kill'] = s
-    r = requests.post('http://mon.ispbug.ru:35000/killproc/api/', data=json.dumps(json_string), headers = {'Content-type': 'application/json', 'Authorization': 'Token dd798c14e26b32c517ca2dd40c372dd4f027ba50'})
+    r = requests.post('http://mon.ispbug.ru:35000/mem/api/', data=json.dumps(json_string), headers = {'Content-type': 'application/json', 'Authorization': 'Token {}'.format(read_authfile('/opt/ansible/artem/tools/vmmgr/auth'))})
     return True
 
 def sshkill(host,pid):
@@ -51,3 +56,4 @@ if __name__ == '__main__':
             except Exception:
                 continue
         print(vls)
+        changesend("{} vms:{} limit:{} willchangeto:{}".format(vls['countvm'],vls['maxvmcount'],vls['meminfo']))
