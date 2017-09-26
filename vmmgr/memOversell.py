@@ -41,6 +41,6 @@ def getticket(tpe,ip):
 if __name__ == '__main__':
     f = open('/var/tmp/procsforkill', 'w')
     lst = []
-    output = subprocess.run("ansible kvmaster -i inventory.py -m shell -a '/usr/local/mgr5/sbin/mgrctl -m vmmgr vmhostnode'  | egrep 'meminfo=[8-9][0-9]'", shell=True, stdout=subprocess.PIPE,universal_newlines=True) 
+    output = subprocess.run("ansible kvmaster -i /opt/ansible/inventory.py -m shell -a '/usr/local/mgr5/sbin/mgrctl -m vmmgr vmhostnode'  | egrep 'meminfo=[8-9][0-9]'", shell=True, stdout=subprocess.PIPE,universal_newlines=True) 
     for l in str(output.stdout).split('\n'):
         print(l)
