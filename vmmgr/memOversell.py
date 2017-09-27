@@ -9,7 +9,7 @@ import re
 import sqlite3
 
 
-DB_STRING = "/opt/db/tickets.sqlite"
+DB_STRING = "/opt/db/isitOk.sqlite"
 
 def read_authfile(path):
     with open(path, 'r') as f:
@@ -50,6 +50,6 @@ if __name__ == '__main__':
             if int(vls['maxvmcount']) < int(vls['countvm']):
                 continue
             nlimit = int(vls['countvm']) - 1
-            print("{} vms:{} limit/old:{}/{} mem:{}".format(vls['name'],vls['countvm'],nlimit,vls['maxvmcount'],vls['meminfo']))
             out = decreaseLimit(vls['name'],vls['id'],nlimit)
             print("{} vms:{} limit/old:{}/{} mem:{} output:{}".format(vls['name'],vls['countvm'],nlimit,vls['maxvmcount'],vls['meminfo'],out))
+            changesend("{} vms:{} limit/old:{}/{} mem:{} output:{}".format(vls['name'],vls['countvm'],nlimit,vls['maxvmcount'],vls['meminfo'],out))
