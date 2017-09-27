@@ -22,15 +22,21 @@ def changesend(s):
     r = requests.post('http://mon.ispbug.ru:35000/killproc/mem/api/', data=json.dumps(json_string), headers = {'Content-type': 'application/json', 'Authorization': 'Token {}'.format(read_authfile('/opt/ansible/artem/tools/vmmgr/auth'))})
     return True
 
-def decreaseLimit(host,elid,lmt):
+def getMasterNode(host):
      master = host.split('-')[0]
      if master == 'msk':
          master = "{}-{}".format(host.split('-')[0],host.split('-')[1])
      if master == 'wkvm':  master = 'kvm'
+     return master
+def decreaseLimit(host,elid,lmt):
+     master = getMasterNode(host)
      stdout, stderr = Popen(['ssh', '-q','-o UserKnownHostsFile=/dev/null ','-o StrictHostKeyChecking=no','-o ConnectTimeout=10', 'root@{}'.format(master), '/usr/local/mgr5/sbin/mgrctl -m vmmgr vmhostnode.edit  elid={} maxvmcount={} sok=ok'.format(elid,lmt)],stdout=PIPE,universal_newlines=True).communicate()
      return stdout
 
-
+def touchtCount(host,count):
+    with sqlite3.connect(DB_STRING) as c:
+        r = c.execute("INSERT INTO countlog(name,cluster,count) VALUES (?,?,?)",['meminfo80pcnt',host,count])
+    return r
 
 
 if __name__ == '__main__':
