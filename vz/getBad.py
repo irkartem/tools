@@ -47,6 +47,7 @@ if __name__ == '__main__':
     game = ['(samp03svr)','(hlds_linux)','(hlds_i686)','(srcds_linux)','(ioq3ded)']
     output = subprocess.run("/usr/local/bin/ansible vznode -i /opt/ansible/inventory.py -m shell -a '/opt/vzProcs.py'", shell=True, stdout=subprocess.PIPE,universal_newlines=True) 
     #print("/usr/bin/ansible {} -i /opt/ansible/inventory.py -m shell -a '/usr/local/mgr5/sbin/mgrctl -m vemgr vmhostnode'".format(master))
+    tout = "mon.hour getBad.py \n"
     for l in str(output.stdout).split('\n'):
         try:
           host,ip,pid,cmd,state,vid,cpu,io,fcmd = l.split(' ')
@@ -75,6 +76,7 @@ if __name__ == '__main__':
           if tt != False:
               print("Need to append ticket {} {}i {}".format(tt,ip,cmd))
               sshkill(host,pid)
+              tout += "Double detect {} {} {} \n{}\n\n".format('miner',tt,ip,fcmd)
           else:
               name = u'Майнинг на VDS {} {}'.format(cmd,ip)
               text = u'''
@@ -96,5 +98,7 @@ if __name__ == '__main__':
               touchticket('mine',ip,out)
               killsend("Miner have found pid {}, {}, veid {}, {}, {}, ticket {}".format(pid,cmd,vid,host,ip,out))
               sshkill(host,pid)
+    if tout != "mon.hour getBad.py \n":
+        requests.post('http://mon.ispsystem.net/telegram_senderart.py',data={'text':tout})
 
 
