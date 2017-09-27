@@ -49,6 +49,7 @@ if __name__ == '__main__':
             #changesend("{} vms:{} limit:{} mem:{}".format(vls['name'],vls['countvm'],vls['maxvmcount'],vls['meminfo']))
             if int(vls['maxvmcount']) < int(vls['countvm']):
                 continue
+            nlimit = int(vls['countvm']) - 1
             print("{} vms:{} limit/old:{}/{} mem:{}".format(vls['name'],vls['countvm'],nlimit,vls['maxvmcount'],vls['meminfo']))
             out = decreaseLimit(vls['name'],vls['id'],nlimit)
             print("{} vms:{} limit/old:{}/{} mem:{} output:{}".format(vls['name'],vls['countvm'],nlimit,vls['maxvmcount'],vls['meminfo'],out))
