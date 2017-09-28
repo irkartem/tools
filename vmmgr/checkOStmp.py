@@ -6,7 +6,7 @@ import requests
 import json
 
 
-vzdct = {}
+vzdict = {}
 kvdict = {}
 with open('/opt/db/vztempl', 'r') as vzconf:
     for line in vzconf:
@@ -25,7 +25,7 @@ for l in str(output.stdout).split('\n'):
         name = l.split(' ')[0]
         print("can't login {}\n".format(name))
     name,osname,ver = l.strip().split(' ')[:3]
-    if (osname not in vzdct.keys()):
+    if (osname not in vzdict.keys()):
         print ("New TMPL {} {} {}\n".format(name,osname,ver))
-    if (osname in vzdct.keys()) and (vzdct[osname] != ver):
-        print ("wrong TMPL {} {} {}={}\n".format(name,osname,ver,vzdct[osname]))
+    if (osname in vzdict.keys()) and (vzdict[osname] != ver):
+        print ("wrong TMPL {} {} {}={}\n".format(name,osname,ver,vzdict[osname]))
