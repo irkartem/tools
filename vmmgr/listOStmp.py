@@ -5,6 +5,8 @@ import os
 import socket
 
 hh = socket.gethostname()
+osname=''
+ver=''
 if os.path.isdir("/vm/nfsshare/"):
     for dirname in os.listdir('/vm/nfsshare/'):
         if dirname == 'iso': continue
