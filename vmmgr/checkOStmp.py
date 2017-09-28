@@ -24,7 +24,10 @@ for l in str(output.stdout).split('\n'):
     if 'FAIL' in l:
         name = l.split(' ')[0]
         print("can't login {}\n".format(name))
-    name,osname,ver = l.strip().split(' ')[:3]
+    try:
+        name,osname,ver = l.strip().split(' ')[:3]
+    except Exception:
+        print("Bad Line:{}\n".format(l))
     if (osname not in vzdict.keys()):
         print ("New TMPL {} {} {}\n".format(name,osname,ver))
     if (osname in vzdict.keys()) and (vzdict[osname] != ver):
