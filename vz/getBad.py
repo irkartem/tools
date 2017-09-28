@@ -99,7 +99,7 @@ if __name__ == '__main__':
               touchticket('mine',ip,out)
               killsend("Miner have found pid {}, {}, veid {}, {}, {}, ticket {}".format(pid,fcmd,vid,host,ip,out))
               sshkill(host,pid)
-    if tout != "mon.hour getBad.py \n":
+    if tout != "mon.hour getBad.py ":
         requests.post('http://mon.ispsystem.net/telegram_senderart.py',data={'text':tout})
 
 
