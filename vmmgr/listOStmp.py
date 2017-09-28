@@ -17,10 +17,10 @@ if os.path.isdir("/vm/nfsshare/"):
                 continue
         for line in f.readlines():
             if line.startswith('  <osname>'):
-                os = line.split('>')[1].split('<')[0]
+                osname = line.split('>')[1].split('<')[0]
             if line.startswith('  <version>'):
                 ver = line.split('>')[1].split('<')[0]
-        print("{0} {1} {2}".format(hh,os,ver))
+        print("{0} {1} {2}".format(hh,osname,ver))
 if os.path.isdir("/vz/template/cache/"):
     for dirname in os.listdir('/vz/template/cache/'):
 	sz = os.path.getsize('/vz/template/cache/{0}'.format(dirname))
