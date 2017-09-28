@@ -23,4 +23,5 @@ if os.path.isdir("/vm/nfsshare/"):
         print("{0} {1} {2}".format(hh,os,ver))
 if os.path.isdir("/vz/template/cache/"):
     for dirname in os.listdir('/vz/template/cache/'):
-        print("{0} {1} {2}".format(hh,dirname,'0'))
+	sz = os.path.getsize('/vz/template/cache/{0}'.format(dirname))
+        print("{0} {1} {2}".format(hh,dirname,sz))
