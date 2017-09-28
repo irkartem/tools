@@ -24,4 +24,3 @@ if os.path.isdir("/vm/nfsshare/"):
 if os.path.isdir("/vz/template/cache/"):
     for dirname in os.listdir('/vm/nfsshare/'):
         print("{} {} {}".format(hh,dirname,'0')
-
