@@ -52,15 +52,14 @@ if __name__ == '__main__':
             except Exception:
                 continue
         if 'name' in vls.keys():
+            fout += "name:{} vms:{} limit:{} mem:{}\n".format(vls['name'],vls['countvm'],vls['maxvmcount'],vls['meminfo'])
             master = getMasterNode(vls['name'])
             if master not in pctCount.keys():
                 pctCount[master] = 0
             else:
                 pctCount[master] += 1
-            fout += "name:{} vms:{} limit:{} mem:{}\n".format(vls['name'],vls['countvm'],vls['maxvmcount'],vls['meminfo'])
             if vls['name'].startswith('jupiter'):
                 continue
-            #changesend("{} vms:{} limit:{} mem:{}".format(vls['name'],vls['countvm'],vls['maxvmcount'],vls['meminfo']))
             if int(vls['maxvmcount']) < int(vls['countvm']):
                 continue
             nlimit = int(vls['countvm']) - 1
@@ -71,3 +70,4 @@ if __name__ == '__main__':
         touchtCount(k,pctCount[k])
     f = open('/var/tmp/artemcheck/node80pctKVM', 'w')
     f.write(fout)
+    f.close()
