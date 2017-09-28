@@ -8,6 +8,7 @@ import json
 
 vzdict = {}
 kvdict = {}
+kvmdict = {}
 fout = ''
 with open('/opt/db/vztempl', 'r') as vzconf:
     for line in vzconf:
@@ -17,7 +18,11 @@ with open('/opt/db/vztempl', 'r') as vzconf:
 with open('/opt/db/kvtempl', 'r') as vzconf:
     for line in vzconf:
         k,v = line.strip().split(' ')[:2]
-        vzdict[k] = v
+        kvdict[k] = v
+with open('/opt/db/kvntempl', 'r') as vzconf:
+    for line in vzconf:
+        k,v = line.strip().split(' ')[:2]
+        kvmdict[k] = v
 output = subprocess.run("ansible vznode -i /opt/ansible/inventory.py -m shell -a '/opt/listOStmp.py'", shell=True, stdout=subprocess.PIPE,universal_newlines=True) 
 fout = ""
 for l in str(output.stdout).split('\n'):
@@ -39,6 +44,8 @@ for l in str(output.stdout).split('\n'):
 output = subprocess.run("ansible kvnode -i /opt/ansible/inventory.py -m shell -a '/opt/listOStmp.py'", shell=True, stdout=subprocess.PIPE,universal_newlines=True) 
 for l in str(output.stdout).split('\n'):
     chk = vzdict
+    if l.startswith("kvm"):
+        chk = kvmdict
     if 'SUCCESS' in l: continue
     if 'FAILED' in l:
         name = l.split(' ')[0]
