@@ -21,13 +21,14 @@ output = subprocess.run("ansible vznode -i /opt/ansible/inventory.py -m shell -a
 fout = ""
 for l in str(output.stdout).split('\n'):
     if 'SUCCESS' in l: continue
-    if 'FAIL' in l:
+    if 'FAILED' in l:
         name = l.split(' ')[0]
         print("can't login {}\n".format(name))
     try:
         name,osname,ver = l.strip().split(' ')[:3]
     except Exception:
-        print("Bad Line:{}\n".format(l))
+        if len(l) > 3:
+            print("Bad Line:{}\n".format(l))
     if (osname not in vzdict.keys()):
         print ("New TMPL {} {} {}\n".format(name,osname,ver))
     if (osname in vzdict.keys()) and (vzdict[osname] != ver):
