@@ -8,6 +8,7 @@ hh = socket.gethostname()
 if os.path.isdir("/vm/nfsshare/"):
     for dirname in os.listdir('/vm/nfsshare/'):
         if dirname == 'iso': continue
+        if dirname == 'recipes': continue
         pth = "/vm/nfsshare/{0}".format(dirname)
         if os.path.isdir(pth):
             try:
