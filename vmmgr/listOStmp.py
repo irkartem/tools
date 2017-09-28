@@ -11,7 +11,7 @@ if os.path.isdir("/vm/nfsshare/"):
         pth = "/vm/nfsshare/{0}".format(dirname)
         if os.path.isdir(pth):
             try:
-                f = open("{0}/metainfo.xml",'r')
+                f = open("{0}/metainfo.xml".format(pth),'r')
             except Exception:
                 print("{0} {1} broken".format(hh,dirname))
                 continue
