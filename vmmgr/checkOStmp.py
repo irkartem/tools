@@ -8,6 +8,7 @@ import json
 
 vzdict = {}
 kvdict = {}
+fout = ''
 with open('/opt/db/vztempl', 'r') as vzconf:
     for line in vzconf:
         k,v = line.strip().split(' ')[:2]
@@ -24,6 +25,7 @@ for l in str(output.stdout).split('\n'):
     if 'FAILED' in l:
         name = l.split(' ')[0]
         print("can't login {}\n".format(name))
+        fout = "{} can't login {}\n".format(fout,name)
     try:
         name,osname,ver = l.strip().split(' ')[:3]
     except Exception:
@@ -33,3 +35,28 @@ for l in str(output.stdout).split('\n'):
         print ("New TMPL {} {} {}\n".format(name,osname,ver))
     if (osname in vzdict.keys()) and (vzdict[osname] != ver):
         print ("wrong TMPL {} {} {}={}\n".format(name,osname,ver,vzdict[osname]))
+
+output = subprocess.run("ansible kvnode -i /opt/ansible/inventory.py -m shell -a '/opt/listOStmp.py'", shell=True, stdout=subprocess.PIPE,universal_newlines=True) 
+for l in str(output.stdout).split('\n'):
+    chk = vzdict
+    if 'SUCCESS' in l: continue
+    if 'FAILED' in l:
+        name = l.split(' ')[0]
+        print("can't login {}\n".format(name))
+        fout = "{} can't login {}\n".format(fout,name)
+    try:
+        name,osname,ver = l.strip().split(' ')[:3]
+    except Exception:
+        if len(l) > 3:
+            print("Bad Line:{}\n".format(l))
+    if (osname not in chk.keys()):
+        print ("New TMPL {} {} {}\n".format(name,osname,ver))
+    if (osname in chk.keys()) and (chk[osname] != ver):
+        print ("wrong TMPL {} {} {}={}\n".format(name,osname,ver,chk[osname]))
+
+
+
+f = open('/var/tmp/artemcheck/checkOStmpl', 'w')
+f.write(fout)
+f.close()
+
