@@ -5,8 +5,9 @@ import os
 import socket
 
 hh = socket.gethostname()
-osname=''
-ver=''
+osname = ''
+ver = ''
+dd = ''
 if os.path.isdir("/vm/nfsshare/"):
     for dirname in os.listdir('/vm/nfsshare/'):
         if dirname == 'iso': continue
@@ -19,10 +20,12 @@ if os.path.isdir("/vm/nfsshare/"):
                 print("{0} {1} broken".format(hh,dirname))
                 continue
         for line in f.readlines():
-            if line.startswith('  <osname>'):
+            if '<osname>' in line:
                 osname = line.split('>')[1].split('<')[0]
-            if line.startswith('  <version>'):
+            if '<version>' in line:
                 ver = line.split('>')[1].split('<')[0]
+            if '<date>' in line:
+                dd = line.split('>')[1].split('<')[0].replace(' ','_')
         print("{0} {1} {2}".format(hh,osname,ver))
 if os.path.isdir("/vz/template/cache/"):
     for dirname in os.listdir('/vz/template/cache/'):
