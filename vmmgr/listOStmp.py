@@ -26,7 +26,9 @@ if os.path.isdir("/vm/nfsshare/"):
                 ver = line.split('>')[1].split('<')[0]
             if '<date>' in line:
                 dd = line.split('>')[1].split('<')[0].replace(' ','_')
-        print("{0} {1} {2}".format(hh,osname,ver))
+        if osname == '':
+            osname = dirname 
+        print("{0} {1} {2}:{3}".format(hh,osname,ver,dd))
 if os.path.isdir("/vz/template/cache/"):
     for dirname in os.listdir('/vz/template/cache/'):
 	sz = os.path.getsize('/vz/template/cache/{0}'.format(dirname))
