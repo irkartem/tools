@@ -43,8 +43,9 @@ for l in str(output.stdout).split('\n'):
 
 output = subprocess.run("ansible kvnode -i /opt/ansible/inventory.py -m shell -a '/opt/listOStmp.py'", shell=True, stdout=subprocess.PIPE,universal_newlines=True) 
 for l in str(output.stdout).split('\n'):
-    chk = vzdict
+    chk = kvdict
     if l.startswith("neptune") or l.startswith("moon") or l.startswith('isp-vm'): continue
+    if 'bitrix' in l: continue
     if l.startswith("kvm"):
         chk = kvmdict
     if 'SUCCESS' in l: continue
