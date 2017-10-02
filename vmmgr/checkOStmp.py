@@ -62,7 +62,7 @@ for l in str(output.stdout).split('\n'):
         print ("New TMPL {} {} {}\n".format(name,osname,ver))
     if (osname in chk.keys()) and (chk[osname] != ver):
         print ("wrong TMPL {} {} {}\n".format(name,osname,ver))
-        print ("wrong TMPL {} {} {}\n".format(name,osname,vzdict[osname]))
+        print ("wrong TMPL {} {} {}\n".format(name,osname,chk[osname]))
 
 
 
