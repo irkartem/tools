@@ -39,7 +39,7 @@ def getticket(tpe,ip):
 
 
 if __name__ == '__main__':
-    f = open('/var/tmp/procsforkill', 'w')
+    f = open('/var/tmp/artemcheck/procsforkill', 'w')
     lst = []
     white = ['(mysqld)','(monclient)','(postgres)','(nginx)','(ruby)','(node)','(auditd)','(python)','(python2)','(uwsgi)','(php5-fpm)','(gunicorn)','(php)','(terminal.exe)','(mongod)','(influxd)','(php-fpm)','(qmgr)','(redis-server)','(nagios)','(httpd)','(mysqld_safe)','(httpd.itk)','(uwsgi-core)','(php-fpm7.0)','(apache2)']
     miner = ['(monacoCoind)','(geysercoind)','(minerd)','(coind)','(arcticcoind)','(multichaind)','(cryptonight)']
