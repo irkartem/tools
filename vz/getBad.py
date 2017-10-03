@@ -82,7 +82,9 @@ if __name__ == '__main__':
               print("Need to append ticket {} {}i {}".format(tt,ip,cmd))
               sshkill(host,pid)
               tout += "Double detect {} {} {}   {}\n".format('miner',tt.replace('\n', ' ').replace('\r', ''),ip,fcmd)
+              killsend("Double detect {} {} {}   {}\n".format('miner',tt.replace('\n', ' ').replace('\r', ''),ip,fcmd))
           else:
+              killsend("Miner have found pid {}, {}, veid {}, {}, {}, ticket {}".format(pid,fcmd,vid,host,ip,out))
               name = u'Майнинг на VDS {} {}'.format(cmd,ip)
               text = u'''
 Здравствуйте, %name%.
@@ -102,7 +104,6 @@ if __name__ == '__main__':
               out = r.content.decode('utf-8')
               #print("######KilledFucking {} {}, {}, {}, {}, {}, cpu {}".format(pid,state,cmd,vid,host,ip,cpu))
               touchticket('mine',ip,out)
-              killsend("Miner have found pid {}, {}, veid {}, {}, {}, ticket {}".format(pid,fcmd,vid,host,ip,out))
               sshkill(host,pid)
     if tout != "mon.hour getBad.py ":
         killsend(tout)
