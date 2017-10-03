@@ -14,7 +14,7 @@ DB_STRING = "/opt/db/tickets.sqlite"
 
 def killsend(s):
     json_string = {}
-    json_string['string_kill'] = s
+    json_string['string_kill'] = s.strip()
     r = requests.post('http://mon.ispbug.ru:35000/killproc/api/', data=json.dumps(json_string), headers = {'Content-type': 'application/json', 'Authorization': 'Token dd798c14e26b32c517ca2dd40c372dd4f027ba50'})
     print(r)
     if r.status_code != 200:
@@ -57,6 +57,7 @@ if __name__ == '__main__':
     for l in str(output.stdout).split('\n'):
         try:
           host,ip,pid,cmd,state,vid,cpu,io,fcmd = l.split(' ')
+          fcmd = fcmd.strip()
         except Exception:
             continue
         try:
