@@ -7,6 +7,7 @@ import json
 import urllib.parse
 import re
 import sqlite3
+import datetime
 
 
 DB_STRING = "/opt/db/tickets.sqlite"
@@ -15,6 +16,10 @@ def killsend(s):
     json_string = {}
     json_string['string_kill'] = s
     r = requests.post('http://mon.ispbug.ru:35000/killproc/api/', data=json.dumps(json_string), headers = {'Content-type': 'application/json', 'Authorization': 'Token dd798c14e26b32c517ca2dd40c372dd4f027ba50'})
+    if r.status_code != 200:
+        f = open('/var/tmp/artemcheck/procsforkill', 'a')
+        f.write(" {} {}\n".format(datetime.date.today(),s))
+        f.close
     return True
 
 def sshkill(host,pid):
