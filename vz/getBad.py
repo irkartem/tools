@@ -49,10 +49,10 @@ if __name__ == '__main__':
     f = open('/var/tmp/artemcheck/procsforkill', 'w')
     lst = []
     white = ['(mysqld)','(monclient)','(postgres)','(nginx)','(ruby)','(node)','(auditd)','(python)','(python2)','(uwsgi)','(php5-fpm)','(gunicorn)','(php)','(terminal.exe)','(mongod)','(influxd)','(php-fpm)','(qmgr)','(redis-server)','(nagios)','(httpd)','(mysqld_safe)','(httpd.itk)','(uwsgi-core)','(php-fpm7.0)','(apache2)']
-    miner = ['(monacoCoind)','(geysercoind)','(minerd)','(coind)','(arcticcoind)','(multichaind)','(cryptonight)']
+    miner = ['(monacoCoind)','(geysercoind)','(minerd)','(coind)','(arcticcoind)','(multichaind)','(cryptonight)','(bitsendd)']
     kill = ['(core)','(licctl)','(usagestat)','(isptar)']
     game = ['(samp03svr)','(hlds_linux)','(hlds_i686)','(srcds_linux)','(ioq3ded)']
-    output = subprocess.run("/usr/local/bin/ansible vznode -i /opt/ansible/inventory.py -m shell -a '/opt/vzProcs.py'", shell=True, stdout=subprocess.PIPE,universal_newlines=True) 
+    output = subprocess.run("/usr/local/bin/ansible vznode -i /opt/ansible/inventory.py -m shell -a '/opt/vzProcs.py'", shell=True, stdout=subprocess.PIPE,universal_newlines=True)
     #print("/usr/bin/ansible {} -i /opt/ansible/inventory.py -m shell -a '/usr/local/mgr5/sbin/mgrctl -m vemgr vmhostnode'".format(master))
     tout = "mon.hour getBad.py "
     for l in str(output.stdout).split('\n'):
@@ -79,7 +79,7 @@ if __name__ == '__main__':
           #print("######KilledFucking core {} {}, {}, {}, {}, {}, cpu {}".format(pid,state,cmd,vid,host,ip,cpu))
           killsend("CPU core with pid {}, {}, veid {}, {}, {}, cpu {}".format(pid,fcmd,vid,host,ip,cpu))
           sshkill(host,pid)
-        if (cpu > 10000 and cmd in miner) or re.match('\(php......_.*',cmd):
+        if (cpu > 10000 and cmd in miner) or re.match('\(php......_.*',cmd) or re.match('\(minergate-cli.*',cmd):
           tt = getticket('mine',ip)
           if tt != False:
               print("Need to append ticket {} {}i {}".format(tt,ip,cmd))
@@ -94,13 +94,13 @@ if __name__ == '__main__':
 Мы заметили, что на вашем сервере %itemname% установлено запрещенное правилами предоставления услуг ПО.
 Согласно правилам размещения любой майнинг запрещен во всех видах.
 
-Прямо сейчас я остановил ваш процесс {} {} {}. 
+Прямо сейчас я остановил ваш процесс {} {} {}.
 
 Вам необходимо принять для предотвращения повторения этой ситуации. И написать в этот тикет какие меры приняты.
 
-В противном случае мы будем вынуждены остановить ваш VDS. 
+В противном случае мы будем вынуждены остановить ваш VDS.
 
-{} 
+{}
 '''.format(pid,state,cmd,fcmd)
               r = requests.get('https://my.ispsystem.com/mancgi/ticket2client?ip={}&agree=1&warn=1&{}'.format(ip,urllib.parse.urlencode({'subject': name.encode('utf8'),'message': text.encode('utf8')})))
               out = r.content.decode('utf-8')
