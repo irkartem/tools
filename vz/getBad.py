@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python3.6
 
 import subprocess
 from subprocess import Popen, PIPE
@@ -25,7 +25,7 @@ def killsend(s):
     return True
 
 def sshkill(host,pid):
-     stdout, stderr = Popen(['ssh', '-q','-o UserKnownHostsFile=/dev/null ','-o StrictHostKeyChecking=no','-o ConnectTimeout=10', 'root@{}'.format(host), 'kill -9 {}'.format(pid)],stdout=PIPE,universal_newlines=True).communicate()
+     stdout, stderr = Popen(['/usr/bin/ssh', '-q','-o UserKnownHostsFile=/dev/null ','-o StrictHostKeyChecking=no','-o ConnectTimeout=10', 'root@{}'.format(host), 'kill -9 {}'.format(pid)],stdout=PIPE,universal_newlines=True).communicate()
      return stdout
 
 
@@ -52,7 +52,7 @@ if __name__ == '__main__':
     miner = ['(monacoCoind)','(geysercoind)','(minerd)','(coind)','(arcticcoind)','(multichaind)','(cryptonight)','(bitsendd)']
     kill = ['(core)','(licctl)','(usagestat)','(isptar)']
     game = ['(samp03svr)','(hlds_linux)','(hlds_i686)','(srcds_linux)','(ioq3ded)']
-    output = subprocess.run("/usr/local/bin/ansible vznode -i /opt/ansible/inventory.py -m shell -a '/opt/vzProcs.py'", shell=True, stdout=subprocess.PIPE,universal_newlines=True)
+    output = subprocess.run("/usr/bin/ansible vznode -i /opt/inventory -m shell -a '/opt/vzProcs.py'", shell=True, stdout=subprocess.PIPE,universal_newlines=True)
     #print("/usr/bin/ansible {} -i /opt/ansible/inventory.py -m shell -a '/usr/local/mgr5/sbin/mgrctl -m vemgr vmhostnode'".format(master))
     tout = "mon.hour getBad.py "
     for l in str(output.stdout).split('\n'):
@@ -74,7 +74,7 @@ if __name__ == '__main__':
                 f.write(" {} {}, {}, {}, {}, {}, cpu {} {}\n".format(cmd,pid,state,vid,host,ip,cpu,fcmd))
         if cpu > 100000 and 'bash' in cmd:
           killsend("CPU bash with pid {}, {}, veid {}, {}, {}, cpu {}".format(pid,fcmd,vid,host,ip,cpu))
-          sshkill(host,pid)
+          print("KILLLL {}".format(sshkill(host,pid)))
         if cpu > 300000 and cmd in kill:
           #print("######KilledFucking core {} {}, {}, {}, {}, {}, cpu {}".format(pid,state,cmd,vid,host,ip,cpu))
           killsend("CPU core with pid {}, {}, veid {}, {}, {}, cpu {}".format(pid,fcmd,vid,host,ip,cpu))
@@ -96,9 +96,9 @@ if __name__ == '__main__':
 
 Прямо сейчас я остановил ваш процесс {} {} {}.
 
-Вам необходимо принять для предотвращения повторения этой ситуации. И написать в этот тикет какие меры приняты.
+Вам необходимо принять меры для предотвращения повторения этой ситуации. И написать в этот тикет какие меры приняты.
 
-В противном случае мы будем вынуждены остановить ваш VDS.
+В противном случае мы будем вынуждены остановить ваш VDS. Автоматически VDS будет остановлен через 12 часов
 
 {}
 '''.format(pid,state,cmd,fcmd)
