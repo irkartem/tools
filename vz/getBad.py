@@ -30,16 +30,15 @@ def killsend(s):
     r = requests.post('http://mon.ispbug.ru:35000/killproc/api/', data=json.dumps(json_string), headers = {'Content-type': 'application/json', 'Authorization': 'Token {}'.format(ath)})
     print(r)
     print(json_string)
-    if r.status_code != 200:
+    if int(r.status_code) > 250:
         f = open('/var/tmp/artemcheck/error-procsforkill', 'a')
-        f.write(" {} {}\n".format(datetime.date.today(),s))
+        f.write(" {} {} {}\n".format(datetime.date.today(),s,r))
         f.close
     return True
 
 def sshkill(host,pid):
      stdout, stderr = Popen(['/usr/bin/ssh', '-q','-o UserKnownHostsFile=/dev/null ','-o StrictHostKeyChecking=no','-o ConnectTimeout=10', 'root@{}'.format(host), 'kill -9 {}'.format(pid)],stdout=PIPE,universal_newlines=True).communicate()
      return stdout
-
 
 def touchticket(tpe,ip,ticket):
     with sqlite3.connect(DB_STRING) as c:
@@ -49,12 +48,20 @@ def touchticket(tpe,ip,ticket):
 def getticket(tpe,ip):
   with sqlite3.connect(DB_STRING) as c:
        #r = c.execute("SELECT t, data FROM log where t>= datetime('now', '-1 minutes','localtime');")
-       r = c.execute("select ticket from ticket where type=? and ip=? and dtime>datetime('now', '-3 hour');",[tpe,ip])
+       r = c.execute("select ticket from ticket where type=? and ip=? and dtime>datetime('now', '-13 hour');",[tpe,ip])
        ip = r.fetchone()
        if ip:
            return ip[0]
        else:
          return False
+
+def lognet(host,pid):
+    output = subprocess.run('/usr/bin/ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ConnectTimeout=10 root@{} "/usr/sbin/lsof -p{} -n -P"'.format(host,pid), shell=True, stdout=subprocess.PIPE,universal_newlines=True)
+    f = open('/var/tmp/log','a')
+    f.write("################## {} # {}".format(host,pid))
+    for l in str(output.stdout).split('\n'):
+        f.write("{} \n".format(l))
+    f.close()
 
 
 if __name__ == '__main__':
@@ -90,18 +97,30 @@ if __name__ == '__main__':
           killsend("CPU bash with pid {}, {}, veid {}, {}, {}, cpu {}".format(pid,fcmd,vid,host,ip,cpu))
           kl += 1
           print("KILLLL {}".format(sshkill(host,pid)))
+        if cpu > 1000 and cmd in ['(licctl)']:
+          #print("######KilledFucking core {} {}, {}, {}, {}, {}, cpu {}".format(pid,state,cmd,vid,host,ip,cpu))
+          killsend("CPU core with pid {}, {}, veid {}, {}, {}, cpu {}".format(pid,fcmd,vid,host,ip,cpu))
+          kl += 1
+          sshkill(host,pid)
         if cpu > 300000 and cmd in kill:
           #print("######KilledFucking core {} {}, {}, {}, {}, {}, cpu {}".format(pid,state,cmd,vid,host,ip,cpu))
           killsend("CPU core with pid {}, {}, veid {}, {}, {}, cpu {}".format(pid,fcmd,vid,host,ip,cpu))
           kl += 1
           sshkill(host,pid)
-        if (cpu > 10000 and cmd in miner) or re.match('\(php......_.*',cmd) or re.match('\(minergate-cli.*',cmd):
+        isminer = False
+        if (cpu > 10000 and cmd in miner) or re.match('\(php......_.*',cmd) or re.match('\(minergate-cli.*',cmd) or re.match('.*miner_cpu.*',cmd):
+            isminer = True
+        if 'stratum' in fcmd or 'cryptonight' in fcmd or 'xmrig' in fcmd:
+            isminer = True
+        if isminer == True:
           tt = getticket('mine',ip)
           if tt != False:
               print("Need to append ticket {} {}i {}".format(tt,ip,cmd))
+              lognet(host,pid)
               sshkill(host,pid)
               tout += "Double detect {} {} {}   {}\n".format('miner',tt.replace('\n', ' ').replace('\r', ''),ip,fcmd)
-              msg = "Майнинговые скрипты вновь обнаружены на вашей VDS {} {} {} \n".format(ip,pid,fcmd)
+              msg = "Майнинговые скрипты вновь обнаружены на вашей VDS {} {} {} \n {} \n".format(ip,pid,cmd,fcmd)
+              f.write(msg)
               killsend("Double detect {} {} {}   {}\n".format('miner',tt.replace('\n', ' ').replace('\r', ''),ip,fcmd))
               kl += 1
           else:
@@ -121,8 +140,9 @@ if __name__ == '__main__':
 {}
 '''.format(pid,state,cmd,fcmd)
               urlb = read_authfile('/opt/billurl')
-              r = requests.get('https://{}?ip={}&agree=1&warn=1&{}'.format(urlb,ip,urllib.parse.urlencode({'subject': name.encode('utf8'),'message': text.encode('utf8')})))
-              out = r.content.decode('utf-8')
+              #r = requests.get('https://{}?ip={}&agree=1&warn=1&{}'.format(urlb,ip,urllib.parse.urlencode({'subject': name.encode('utf8'),'message': text.encode('utf8')})))
+              out = '00000'
+              #out = r.content.decode('utf-8')
               #print("######KilledFucking {} {}, {}, {}, {}, {}, cpu {}".format(pid,state,cmd,vid,host,ip,cpu))
               touchticket('mine',ip,out)
               tck += 1
@@ -132,6 +152,7 @@ if __name__ == '__main__':
     if tout != "mon.hour getBad.py ":
         killsend(tout)
         #requests.post('http://mon.ispsystem.net/telegram_senderart.py',data={'text':tout})
+    print('send info-----------------------')
     touchMon('Cron_mine_kill_server',{'killed':kl,'tickets':tck})
 
 
