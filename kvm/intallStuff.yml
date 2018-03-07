@@ -1,0 +1,10 @@
+---
+- hosts: kvnode
+  remote_user: root
+  tasks:
+  - name: install freeipmi
+    yum:
+      name: freeipmi
+      state: latest
+
+

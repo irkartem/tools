@@ -1,0 +1,1 @@
+ansible -i /opt/inventory kvnode -m shell -a 'ipmi-oem intelnm get-node-manager-statistics |grep "Maximum Power "'
