@@ -1,0 +1,12 @@
+---
+- hosts: webhost
+  remote_user: root
+  tasks:
+  - name: Check for local.php.ini
+    local_action: stat path=/opt/hosting-config-ispmgr5/webhost/php.ini get_md5=yes
+    register: lmd5
+  - stat: path=/etc/php.ini get_md5=yes
+    register: rmd5
+  - local_action: shell /opt/hosting-config-ispmgr5/tools/sshdiff.py {{ ansible_nodename }} /etc/php.ini /opt/hosting-config-ispmgr5/webhost/php.ini
+    register: diffdata
+    when: lmd5.stat.md5 != rmd5.stat.md5

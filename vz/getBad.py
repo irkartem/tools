@@ -32,7 +32,7 @@ def killsend(s):
     print(json_string)
     if int(r.status_code) > 250:
         f = open('/var/tmp/artemcheck/error-procsforkill', 'a')
-        f.write(" {} {} {}\n".format(datetime.date.today(),s,r))
+        f.write(" {} {} {}\n".format(datetime.datetime.now(),s,r))
         f.close
     return True
 
@@ -110,7 +110,7 @@ if __name__ == '__main__':
         isminer = False
         if (cpu > 10000 and cmd in miner) or re.match('\(php......_.*',cmd) or re.match('\(minergate-cli.*',cmd) or re.match('.*miner_cpu.*',cmd):
             isminer = True
-        if 'stratum' in fcmd or 'cryptonight' in fcmd or 'xmrig' in fcmd:
+        if 'stratum' in fcmd or 'cryptonight' in fcmd or 'xmrig' in fcmd or 'ethash' in fcmd or 'supsplk' in fcmd or 'monero' in fcmd:
             isminer = True
         if isminer == True:
           tt = getticket('mine',ip)
@@ -118,7 +118,7 @@ if __name__ == '__main__':
               print("Need to append ticket {} {}i {}".format(tt,ip,cmd))
               lognet(host,pid)
               sshkill(host,pid)
-              tout += "Double detect {} {} {}   {}\n".format('miner',tt.replace('\n', ' ').replace('\r', ''),ip,fcmd)
+              tout += "{} Double detect {} {} {}   {}\n".format(datetime.datetime.now(),'miner',tt.replace('\n', ' ').replace('\r', ''),ip,fcmd)
               msg = "Майнинговые скрипты вновь обнаружены на вашей VDS {} {} {} \n {} \n".format(ip,pid,cmd,fcmd)
               f.write(msg)
               killsend("Double detect {} {} {}   {}\n".format('miner',tt.replace('\n', ' ').replace('\r', ''),ip,fcmd))
@@ -136,6 +136,7 @@ if __name__ == '__main__':
 Вам необходимо принять меры для предотвращения повторения этой ситуации. И написать в этот тикет какие меры приняты.
 
 В противном случае мы будем вынуждены остановить ваш VDS.
+По истечению 7 дней с момента остановки, Ваша услуга будет удалена.
 
 {}
 '''.format(pid,state,cmd,fcmd)
