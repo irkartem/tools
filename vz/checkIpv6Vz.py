@@ -24,7 +24,7 @@ def response(url):
 
 def sendinflux(jdata):
     client = InfluxDBClient('store.firstvds.ru', 8086,
-                            'cron', 'Yuoph2ah', 'clusters')
+                            'cron', 'df', 'clusters')
     return client.write_points(jdata)
 
 def touchMon(s,st={}):
